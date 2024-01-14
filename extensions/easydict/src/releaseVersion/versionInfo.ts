@@ -1,8 +1,8 @@
 /*
  * @author: tisfeng
  * @createTime: 2022-07-01 19:05
- * @lastEditor: Tisfeng
- * @lastEditTime: 2022-12-16 17:59
+ * @lastEditor: tisfeng
+ * @lastEditTime: 2023-05-17 22:34
  * @fileName: versionInfo.ts
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
@@ -26,10 +26,10 @@ export class Easydict {
   static repo = "Raycast-Easydict";
 
   // * NOTE: this is new version info, don't use it directly. Use getCurrentStoredVersionInfo() instead.
-  version = "2.7.0";
-  buildNumber = 19;
-  versionDate = "2022-12-16";
-  isNeedPrompt = false;
+  version = "2.9.1";
+  buildNumber = 27;
+  versionDate = "2024-01-08";
+  isNeedPrompt = true;
   hasPrompted = false; // * always default false, only show once, then should be set to true.
 
   releaseMarkdown = `
@@ -37,23 +37,22 @@ export class Easydict {
 
 ### 💎 优化
 
-- 优化单词考试收录等级显示，改用 tag 标签显示。
-
-### 🐞 修复
-
-- 修复了 arguments 查询时，输入文本不显示问题。
+- 支持自定义 OpenAI API URL，感谢 [liyaodong](https://github.com/liyaodong) 的 PR。
+- 优化了语种识别功能，添加百度语种识别为默认选项。
 
 #### 如果觉得这个扩展还不错，给个 [Star](https://github.com/tisfeng/Raycast-Easydict) ⭐️ 支持一下吧 (^-^)
 
+## 推荐
+
+我另一个免费开源项目，[Easydict](https://github.com/tisfeng/Easydict) ，一个简洁优雅的词典翻译 macOS App。开箱即用，支持离线 OCR 识别，支持有道词典，🍎 苹果系统词典，🍎 苹果系统翻译，ChatGPT，DeepL，Google，Bing，腾讯，百度，阿里，小牛，彩云和火山翻译。
+
+![iShot_2023-03-17_18.01.22_11zon-1679050206](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-03-17_18.01.22_11zon-1679050206.jpg)
+
 ---
 
-### 💎 Improvement
+### ✨ New Features
 
-- Improved the display of word exam collection level, use tag label display.
-
-### 🐞 Fixes
-
-- Fixed the problem that the input text was not displayed when querying from arguments.
+- Added OCR screenshot translation command, thanks to [aidevjoe](https://github.com/aidevjoe)'s PR.
 `;
 
   getRepoUrl() {

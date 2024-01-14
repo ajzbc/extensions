@@ -1,7 +1,7 @@
-import { Detail, launchCommand, environment, LaunchType, closeMainWindow, popToRoot, List, Icon } from "@raycast/api";
-
+import { Detail, launchCommand, LaunchType, closeMainWindow, popToRoot, List, Icon } from "@raycast/api";
 import { ActionPanel, Action } from "@raycast/api";
-
+import { useFetch } from "@raycast/utils";
+import { exec } from "child_process";
 import {
   continueInterval,
   createInterval,
@@ -11,13 +11,20 @@ import {
   preferences,
   resetInterval,
 } from "../lib/intervals";
+import { GiphyResponse } from "../lib/types";
 
 const createAction = (action: () => void) => () => {
   action();
-  launchCommand({
-    name: "pomodoro-menu-bar",
-    type: LaunchType.UserInitiated,
-  });
+
+  try {
+    launchCommand({
+      name: "pomodoro-menu-bar",
+      type: LaunchType.UserInitiated,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
   popToRoot();
   closeMainWindow();
 };
@@ -99,10 +106,37 @@ const ActionsList = () => {
 };
 
 const EndOfInterval = () => {
+  let markdownImage;
+  let usingGiphy = false;
+
+  if (preferences.sound) {
+    exec(`afplay /System/Library/Sounds/${preferences.sound}.aiff -v 10 && $$`);
+  }
+
+  if (preferences.giphyAPIKey) {
+    const { isLoading, data } = useFetch(
+      `https://api.giphy.com/v1/gifs/random?api_key=${preferences.giphyAPIKey}&tag=${preferences.giphyTag}&rating=${preferences.giphyRating}`,
+      {
+        keepPreviousData: true,
+      }
+    );
+    if (!isLoading && data) {
+      const giphyResponse = data as GiphyResponse;
+      markdownImage = `![${giphyResponse.data.title}](${giphyResponse.data.images.fixed_height.url})`;
+      usingGiphy = true;
+    } else if (isLoading) {
+      ("You did it!");
+    } else {
+      markdownImage = `![${"You did it!"}](${preferences.completionImage})`;
+    }
+  } else {
+    markdownImage = `![${"You did it!"}](${preferences.completionImage})`;
+  }
+
   return (
     <Detail
       navigationTitle={`Interval completed`}
-      markdown={`![The Best Thank You GIF by SWR3](https://media0.giphy.com/media/ZBn3ZRvCbWz2PS3Rbg/200.gif)`}
+      markdown={`${usingGiphy ? `![powered by GIPHY](Poweredby_100px-White_VertLogo.png) \n \n` : ""}` + markdownImage}
       actions={
         <ActionPanel title="Start Next Interval">
           <Action
@@ -126,6 +160,6 @@ const EndOfInterval = () => {
   );
 };
 
-export default function Command() {
-  return environment.launchContext?.currentInterval ? <EndOfInterval /> : <ActionsList />;
+export default function Command(props: { launchContext?: { currentInterval: string } }) {
+  return props.launchContext?.currentInterval ? <EndOfInterval /> : <ActionsList />;
 }
